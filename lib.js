@@ -41,6 +41,7 @@ function createMatrix(base, remove) {
         intersect[a+1][b]=0;
         break;
       }
+      intersect[a][b]=0;
     }
   }
 
@@ -63,33 +64,98 @@ function functionalLoop(base, remove, limb) {
     return solveList;
   }
   else {
-    var finalList = {};
-
-    for(var i = 0; i < solveList.length; i++) {
-
-      var base = solveList[i];
-      var intersect = createMatrix(base, limb);
-      
-      //console.log(base + ' path: ' + i + ' of ' + solveList.length);
-      //console.log(intersect);
-
-      var secondList = solve({
-        intersect,
-        base,
-        width: base.length,
-        height: limb.length
-      });
-
-      if(secondList != null) {
-        secondList.forEach(function(path) {
-          finalList[path]=true;
-        });
-      }
-    }
-
-    return finalList;
+    return checkLimb(solveList, limb);
   }
 
+};
+
+function reduceList(stringList) {
+  var uniqueList = [];
+  var strLength = Object.keys(stringList).length;
+  uniqueList[0] = stringList[0];
+
+  for(var a = 0; a < strLength; a++) {
+    for(var b = 0; b <= Object.keys(uniqueList).length; b++) {
+      for(var c = 0; c < stringList[a].length; c++) {
+        if(stringList[a].charAt(c)==uniqueList[b].charAt(c)) {
+          continue;
+        }
+        else {
+          break;
+        }
+      }
+    }
+  }
+};
+
+function checkLimb(solveList, limb) {
+
+  var finalList = {};
+
+  solveList.forEach(function limbSegmentFn(base) {
+
+    //console.log(base);
+    var intersect = createMatrix(base, limb);
+
+    var secondList = solve({
+      intersect,
+      base,
+      width: base.length,
+      height: limb.length
+    });
+
+    //console.log(secondList);
+
+    if (!secondList) {
+      return;
+    }
+
+    secondList.forEach(function setFinalListFn(path) {
+      finalList[path] = true;
+    });
+  });
+
+  return finalList;
+}
+
+function solve(props) {
+
+  var base = props.base;
+  var lookBelow = setupLookBelow(props);
+  var answerLists = [];
+  var moves = lookBelow(0, 0);
+
+  function subslice(output, moveSet) {
+    
+    return Object.keys(moveSet).map(function checkMoves(key) {
+
+      var copy = output.slice(0);
+      copy[key] = ' ';
+      //console.log(copy);
+
+      if (!moveSet[key]) {
+        
+        var answer = copy.join('').replace(/ /g, '');
+
+        if (answerLists.indexOf(answer) === -1) {
+          answerLists.push(answer);
+        }
+        return;
+      }
+
+      subslice(copy, moveSet[key]);
+
+    });
+  }
+
+  if(moves != null) {
+   subslice(base.split(''), moves);
+  }
+  else {
+    return null;
+  }
+
+  return answerLists;
 };
 
 function setupLookBelow(props) {
@@ -131,45 +197,6 @@ function setupLookBelow(props) {
   };
 };
 
-function solve(props) {
-
-  var base = props.base;
-  var lookBelow = setupLookBelow(props);
-  var answerLists = [];
-  var moves = lookBelow(0, 0);
-
-  function subslice(output, moveSet) {
-    return Object.keys(moveSet).map(function checkMoves(key) {
-
-      var copy = output.slice(0);
-      copy[key] = ' ';
-
-      if (!moveSet[key]) {
-        
-        var answer = copy.join('').replace(/ /g, '');
-
-        if (answerLists.indexOf(answer) === -1) {
-          answerLists.push(answer);
-        }
-        return;
-      }
-
-      subslice(copy, moveSet[key]);
-
-    });
-  }
-
-  if(moves != null) {
-    subslice(base.split(''), moves);
-  }
-  else {
-    return null;
-  }
-
-  return answerLists;
-};
-
 module.exports = {
   functionalLoop: functionalLoop,
-  createMatrix: createMatrix
 };
