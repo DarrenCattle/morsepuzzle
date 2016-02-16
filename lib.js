@@ -24,18 +24,18 @@ function createMatrix(base, remove) {
     for (var b = 0; b < base.length; b++) {
       if (removeArray[a] === baseArray[b]) {
         if (a > b) {
-          intersect[a][b] = 0;
+          intersect[a][b] = '';
           continue;
         }
-        intersect[a][b] = 1;
+        intersect[a][b] = removeArray[a];
         continue;
       }
-      intersect[a][b] = 0;
+      intersect[a][b] = '';
     }
   }
 
   //Final step for staggered diagonalization
-  for (var a = 0; a < remove.length-1; a++) {
+  /*for (var a = 0; a < remove.length-1; a++) {
     for (var b = 0; b < base.length; b++) {
       if (intersect[a][b]==1) {
         intersect[a+1][b]=0;
@@ -43,7 +43,7 @@ function createMatrix(base, remove) {
       }
       intersect[a][b]=0;
     }
-  }
+  }*/
 
   return intersect;
 }
@@ -51,6 +51,7 @@ function createMatrix(base, remove) {
 function functionalLoop(base, remove, limb) {
 
   var intersect = createMatrix(base, remove);
+  //console.log(intersect);
 
   var solveList = solve({
     intersect,
@@ -58,6 +59,8 @@ function functionalLoop(base, remove, limb) {
     width: base.length,
     height: remove.length
   });
+
+  //console.log(solveList);
 
   //JavaScript does not have overloading so manually check
   if(limb == null) {
@@ -69,23 +72,29 @@ function functionalLoop(base, remove, limb) {
 
 };
 
-function reduceList(stringList) {
+function reduceList(stringList, limb) {
   var uniqueList = [];
   var strLength = Object.keys(stringList).length;
   uniqueList[0] = stringList[0];
+  var slider = 0;
 
   for(var a = 0; a < strLength; a++) {
-    for(var b = 0; b <= Object.keys(uniqueList).length; b++) {
-      for(var c = 0; c < stringList[a].length; c++) {
-        if(stringList[a].charAt(c)==uniqueList[b].charAt(c)) {
-          continue;
-        }
-        else {
+    slider = 0;
+    for(var b = 0; b < limb.length; b++) {
+      for(var c = slider; c < stringList[a].length; c++) {
+          slider = c;
+          if(b==limb.length-1) {
+            uniqueList.push(stringList[a]);
+          }
           break;
-        }
+      }
+      if(c==stringList[a].length-1) {
+        b=limb.length;
+        break;
       }
     }
   }
+  return uniqueList;
 };
 
 function checkLimb(solveList, limb) {
@@ -94,7 +103,6 @@ function checkLimb(solveList, limb) {
 
   solveList.forEach(function limbSegmentFn(base) {
 
-    //console.log(base);
     var intersect = createMatrix(base, limb);
 
     var secondList = solve({
@@ -164,15 +172,24 @@ function setupLookBelow(props) {
   var height = props.height;
   var intersect = props.intersect;
 
+  function checkPreviousIsDifferent(y, x) {
+    if (x < 1) {
+      return true;
+    }
+ 
+    return intersect[y][x - 1] !== intersect[y][x];
+  }
+
   return function lookBelow(startX, startY) {
 
     var moves = {};
 
     for (var x = startX; x < width; x++) {
 
-      if (intersect[startY][x]) {
+      if (intersect[startY][x] != '') {
         var nextX = x + 1;
         // Make sure that we are within bounds.
+
         if (nextX > width) {
           break;
         }
@@ -192,6 +209,8 @@ function setupLookBelow(props) {
         moves[x] = movesBelow;
       }
     }
+
+    //console.log(moves);
 
     return Object.keys(moves).length > 0 ? moves : null;
   };

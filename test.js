@@ -5,6 +5,7 @@
 var library = require('./lib');
 
 //Step 1A
+console.log('\n');
 console.log('Testing Step 1A');
 var given = "*-_-***";
 var remove = "*-*";
@@ -22,7 +23,8 @@ if(answer===ans) {
 else {
 	console.log('Step 1A Failed');
 }
-console.log('Execution Time: ' + (end-start)/1000 + 's')
+console.log('Execution Time: ' + (end-start)/1000 + 's');
+console.log('\n');
 
 //Step 1B
 console.log('Testing Step 1B');
@@ -43,6 +45,7 @@ else {
 	console.log('Step 1B Failed');
 }
 console.log('Execution Time: ' + (end-start)/1000 + 's')
+console.log('\n');
 
 //Step 2A
 console.log('Testing Step 2A');
@@ -64,7 +67,8 @@ if(answer===ans) {
 else {
 	console.log('Step 2A Failed');
 }
-console.log('Execution Time: ' + (end-start)/1000 + 's')
+console.log('Execution Time: ' + (end-start)/1000 + 's');
+console.log('\n');
 
 //Step 2B
 console.log('Testing Step 2B');
@@ -86,4 +90,4 @@ if(answer===ans) {
 else {
 	console.log('Step 2B Failed');
 }
-console.log('Execution Time: ' + (end-start)/1000 + 's')
+console.log('Execution Time: ' + (end-start)/1000 + 's');
