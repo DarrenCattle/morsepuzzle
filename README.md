@@ -1,7 +1,7 @@
 # README
 
 ## Darren Cattle 
-February 2015  
+February 2015 
 Dynamic Programming Puzzle
 
 ```
