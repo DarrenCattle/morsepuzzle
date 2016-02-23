@@ -1,6 +1,10 @@
 //Darren Cattle
 //February 2016
+//test.js
 //Test Scenarios
+//designed to run in node (-v 4.2.5) without npm install
+//In the command line run:
+//node test
 
 var library = require('./lib');
 

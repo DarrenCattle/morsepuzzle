@@ -2,10 +2,12 @@
 
 ## Darren Cattle 
 February 2015 
-Dynamic Programming Puzzle
+
+athenahealth coding interview
 
 ```
-node main
+node main "given" "remove"
+node main "given" "remove" "remove2nd"
 ```
 or
 ```
