@@ -3,7 +3,7 @@
 ## Darren Cattle 
 February 2015 
 
-athenahealth coding interview
+coding interview
 
 ```
 node main "given" "remove"
